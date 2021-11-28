@@ -58,9 +58,6 @@ Verify forbitspaceX smart contract.
 npm run verify
 ```
 
-## Deployment addresses
-
-- **Ethereum**: **_[`0x5F63AA074da7027Ecb16694A15B8Baf49E14939f`](https://etherscan.io/address/0x5F63AA074da7027Ecb16694A15B8Baf49E14939f#code)_**
 
 ## Contributing
 
