@@ -1,24 +1,24 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity ^0.8.0;
 
-import { SafeERC20, IERC20, Address } from "./SafeERC20.sol";
+import { SafeBEP20, IBEP20, Address } from "./SafeBEP20.sol";
 import { SafeMath } from "./SafeMath.sol";
 import { Ownable } from "./Ownable.sol";
 import { IPayment } from "../interfaces/IPayment.sol";
-import { IWETH } from "../interfaces/IWETH.sol";
+import { IWBNB } from "../interfaces/IWBNB.sol";
 
 abstract contract Payment is IPayment, Ownable {
 	using SafeMath for uint;
-	using SafeERC20 for IERC20;
+	using SafeBEP20 for IBEP20;
 
-	address public constant ETH_ADDRESS = address(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE);
+	address public constant BNB_ADDRESS = address(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE);
 
-	address public immutable WETH_ADDRESS;
+	address public immutable WBNB_ADDRESS;
 	address public admin;
 	receive() external payable {}
 
-	constructor(address _WETH, address _admin) {
-		WETH_ADDRESS = _WETH;
+	constructor(address _WBNB, address _admin) {
+		WBNB_ADDRESS = _WBNB;
 		admin = _admin;
 	}
 
@@ -27,18 +27,18 @@ abstract contract Payment is IPayment, Ownable {
 		address token,
 		uint amount
 	) internal {
-		if (IERC20(token).allowance(address(this), addressToApprove) < amount) {
-			IERC20(token).safeApprove(addressToApprove, 0);
-			IERC20(token).safeIncreaseAllowance(addressToApprove, amount);
+		if (IBEP20(token).allowance(address(this), addressToApprove) < amount) {
+			IBEP20(token).safeApprove(addressToApprove, 0);
+			IBEP20(token).safeIncreaseAllowance(addressToApprove, amount);
 		}
 	}
 
 	function balanceOf(address token) internal view returns (uint bal) {
-		if (token == ETH_ADDRESS) {
-			token = WETH_ADDRESS;
+		if (token == BNB_ADDRESS) {
+			token = WBNB_ADDRESS;
 		}
 
-		bal = IERC20(token).balanceOf(address(this));
+		bal = IBEP20(token).balanceOf(address(this));
 	}
 
 	function pay(
@@ -48,25 +48,25 @@ abstract contract Payment is IPayment, Ownable {
 	) internal {
 		if (amount > 0) {
 			if (recipient == address(this)) {
-				if (token == ETH_ADDRESS) {
-					IWETH(WETH_ADDRESS).deposit{ value: amount }();
+				if (token == BNB_ADDRESS) {
+					IWBNB(WBNB_ADDRESS).deposit{ value: amount }();
 				} else {
-					IERC20(token).safeTransferFrom(_msgSender(), address(this), amount);
+					IBEP20(token).safeTransferFrom(_msgSender(), address(this), amount);
 				}
 			} else {
-				if (token == ETH_ADDRESS) {
-					if (balanceOf(WETH_ADDRESS) > 0) IWETH(WETH_ADDRESS).withdraw(balanceOf(WETH_ADDRESS));
+				if (token == BNB_ADDRESS) {
+					if (balanceOf(WBNB_ADDRESS) > 0) IWBNB(WBNB_ADDRESS).withdraw(balanceOf(WBNB_ADDRESS));
 					Address.sendValue(payable(recipient), amount);
 				} else {
-					IERC20(token).safeTransfer(recipient, amount);
+					IBEP20(token).safeTransfer(recipient, amount);
 				}
 			}
 		}
 	}
 
-	function collectETH() public override returns (uint amount) {
-		if (balanceOf(WETH_ADDRESS) > 0) {
-			IWETH(WETH_ADDRESS).withdraw(balanceOf(WETH_ADDRESS));
+	function collectBNB() public override returns (uint amount) {
+		if (balanceOf(WBNB_ADDRESS) > 0) {
+			IWBNB(WBNB_ADDRESS).withdraw(balanceOf(WBNB_ADDRESS));
 		}
 		if ((amount = address(this).balance) > 0) {
 			Address.sendValue(payable(admin), amount);
@@ -74,10 +74,10 @@ abstract contract Payment is IPayment, Ownable {
 	}
 
 	function collectTokens(address token) public override returns (uint amount) {
-		if (token == ETH_ADDRESS) {
-			amount = collectETH();
+		if (token == BNB_ADDRESS) {
+			amount = collectBNB();
 		} else if ((amount = balanceOf(token)) > 0) {
-			IERC20(token).safeTransfer(admin, amount);
+			IBEP20(token).safeTransfer(admin, amount);
 		}
 	}
 

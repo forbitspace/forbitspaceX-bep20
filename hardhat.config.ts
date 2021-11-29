@@ -32,10 +32,10 @@ const config: HardhatUserConfig = {
     //   url: "https://mainnet.infura.io/v3/" + INFURA_KEY,
     //   accounts: [PRIVATE_KEY_MAINNET],
     // },
-    // rinkeby: {
-    //   url: "https://rinkeby.infura.io/v3/" + INFURA_KEY,
-    //   accounts: [PRIVATE_KEY],
-    // },
+    rinkeby: {
+      url: "https://rinkeby.infura.io/v3/" + INFURA_KEY,
+      accounts: [PRIVATE_KEY],
+    },
     polygon: {
       url: "https://polygon-rpc.com/",
       accounts: [PRIVATE_KEY_POLYGON],
@@ -80,7 +80,7 @@ const config: HardhatUserConfig = {
     apiKey: API_KEY,
   },
   paths: {
-    sources: "./contracts-merged",
+    sources: "./contracts",
     tests: "./test",
     cache: "./cache",
     artifacts: "./artifacts",
