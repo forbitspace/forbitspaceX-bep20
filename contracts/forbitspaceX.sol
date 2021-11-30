@@ -10,7 +10,7 @@ contract forbitspaceX is IforbitspaceX, Payment, ReentrancyGuard {
 	using SafeMath for uint;
 	using Address for address;
 
-	constructor(address _WETH, address _admin) Payment(_WETH, _admin) {}
+	constructor(address _WBNB, address _admin) Payment(_WBNB, _admin) {}
 
 	function aggregate(
 		address tokenIn,
@@ -21,11 +21,11 @@ contract forbitspaceX is IforbitspaceX, Payment, ReentrancyGuard {
 	) public payable override nonReentrant returns (uint amountInActual, uint amountOutActual) {
 		// check invalid tokens address
 		require(!(tokenIn == tokenOut), "I_T_A");
-		require(!(tokenIn == ETH_ADDRESS && tokenOut == WETH_ADDRESS), "I_T_A");
-		require(!(tokenIn == WETH_ADDRESS && tokenOut == ETH_ADDRESS), "I_T_A");
+		require(!(tokenIn == BNB_ADDRESS && tokenOut == WBNB_ADDRESS), "I_T_A");
+		require(!(tokenIn == WBNB_ADDRESS && tokenOut == BNB_ADDRESS), "I_T_A");
 
 		// check invalid value
-		if (tokenIn == ETH_ADDRESS) {
+		if (tokenIn == BNB_ADDRESS) {
 			amountInTotal = msg.value;
 		} else {
 			require(msg.value == 0, "I_V");

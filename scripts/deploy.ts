@@ -2,7 +2,7 @@ import { resolve } from "path";
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import { run, ethers } from "hardhat";
 import { ChainId } from "./constants/chain_id";
-import { WETH_ADDRESSES } from "./constants/addresses";
+import { WBNB_ADDRESSES } from "./constants/addresses";
 
 async function main() {
   await run("compile");
@@ -11,13 +11,14 @@ async function main() {
 
   console.log("chainId >>>", chainId);
 
-  const WETH_ADDRESS: string = WETH_ADDRESSES[chainId];
-  console.log(WETH_ADDRESS);
+  const WBNB_ADDRESS: string = WBNB_ADDRESSES[chainId];
+  console.log(WBNB_ADDRESS);
 
   const NEW_OWNER_ADDRESS = "";
+  const ADMIN_ADDRESS = "0x22579D1B78F9D7ECb6A7038b26E15dBEdd0492E3";
   const contractName = "forbitspaceX";
   const factory = await ethers.getContractFactory(contractName);
-  const contract = await factory.deploy(WETH_ADDRESS);
+  const contract = await factory.deploy(WBNB_ADDRESS, ADMIN_ADDRESS);
   await contract.deployed();
   console.log(`${contractName} deployed to >>>`, contract.address);
 
@@ -50,12 +51,8 @@ async function writeContractJson(
   console.log(data.addresses);
   if (!data.addresses)
     data.addresses = {
-      [ChainId.MAINNET]: "",
-      [ChainId.RINKEBY]: "",
       [ChainId.BSC_MAINNET]: "",
-      [ChainId.BSC_TESTNET]: "",
-      [ChainId.POLYGON]: "",
-      [ChainId.MUMBAI]: "",
+      [ChainId.BSC_TESTNET]: ""
     };
   data.addresses[chainId] = address;
   await writeFileSync(resolve(__dirname, dest), JSON.stringify(data));
