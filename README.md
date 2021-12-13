@@ -60,7 +60,7 @@ npm run verify
 
 ## Deployment addresses
 
-- **Binance Smart Chain**: **_[`0x5F63AA074da7027Ecb16694A15B8Baf49E14939f`](https://bscscan.io/address/0x5F63AA074da7027Ecb16694A15B8Baf49E14939f#code)_**
+- **Binance Smart Chain**: **_[`0x5F63AA074da7027Ecb16694A15B8Baf49E14939f`](https://bscscan.com/address/0x5F63AA074da7027Ecb16694A15B8Baf49E14939f#code)_**
 
 ## Contributing
 
